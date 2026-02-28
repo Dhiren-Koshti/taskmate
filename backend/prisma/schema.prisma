@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  tasks     Task[]
+
+  @@map("users")
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  taskTitle   String    @map("task_title")
+  description String
+  priority    Priority  @default(MEDIUM)
+  category    String?
+  status      Status    @default(PENDING)
+  statusColor String    @default("#f57c00") @map("status_color")
+  isCompleted Boolean   @default(false) @map("is_completed")
+  deadline    DateTime?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CUSTOM
+}
+
+enum Status {
+  PENDING
+  COMPLETED
+  DELAYED
+}
