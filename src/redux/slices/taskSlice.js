@@ -1,7 +1,8 @@
 import { createSlice, current, createAsyncThunk } from "@reduxjs/toolkit";
 import { showAlert, hideAlert } from "./alertSlice";
 
-const host = import.meta.env.VITE_API_URL || "http://localhost:8081/";
+const _url = import.meta.env.VITE_API_URL || "http://localhost:8081";
+const host = _url.endsWith("/") ? _url : _url + "/";
 
 // Fetch Todos Action
 export const fetchTodos = createAsyncThunk("fetchTodos", async (params) => {
